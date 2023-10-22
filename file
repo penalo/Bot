@@ -1,0 +1,34 @@
+import telegram
+from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
+import re
+
+# Replace 'YOUR_BOT_API_TOKEN' with your actual bot's API token
+bot = telegram.Bot(token='6522643839:AAHjXlkSMJUKP9uTeSCcLKatAH79KPLznoc')
+
+def start(update, context):
+    update.message.reply_text("Welcome to the URL processing bot! Please send me a URL.")
+
+def process_url(update, context):
+    user_message = update.message.text
+    updated_url = replace_first_www(user_message)
+    update.message.reply_text(f"Processed URL: {updated_url}")
+
+def replace_first_www(url):
+    # Use regular expression to replace the first "www." with "www.dd"
+    return re.sub(r'www\.', 'www.dd', url, count=1)
+
+def main():
+    # Create an Updater for your bot
+    updater = Updater(token='6522643839:AAHjXlkSMJUKP9uTeSCcLKatAH79KPLznoc', use_context=True)
+    dispatcher = updater.dispatcher
+
+    # Register command and message handlers
+    dispatcher.add_handler(CommandHandler('start', start))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, process_url))
+
+    # Start the bot
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
